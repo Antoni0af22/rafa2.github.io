@@ -31,7 +31,7 @@ signUpForm.addEventListener("submit", async (e) => {
          document.getElementById('modelsTable').innerHTML = '<tr><th>Nombre del Modelo</th><th>Marca</th><th>Año</th><th>Precio</th><th>Fecha de Lanzamiento</th></tr>';
          querySnapshot.forEach((doc) => {
              const model = doc.data();
-             const row = <tr><td>${model.modelName}</td><td>${model.brand}</td><td>${model.year}</td><td>${model.price}</td><td>${model.releaseDate}</td></tr>;
+             const row = `<tr><td>${model.modelName}</td><td>${model.brand}</td><td>${model.year}</td><td>${model.price}</td><td>${model.releaseDate}</td></tr>`;
              document.getElementById('modelsTable').innerHTML += row;
          });
      });
