@@ -1,22 +1,32 @@
 import { onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"
 import { getDocs, collection } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js"
 import { auth, db } from "./init.js";
+const provider = new firebase.auth.GoogleAuthProvider();
+
 
 // Función para iniciar sesión
-const signUpForm = document.querySelector("#signup-form");
-signUpForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('#signup-email').value;
-    const password = document.getElementById('#signup-password').value;
 
-    try{
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-        console.log(userCredential)
-    }catch(error){
-        console.log(error)
-    }
-});
-
+provider.setCustomParameters({ prompt: "select_account" });
+      /* Recibe una función que se invoca cada que hay un cambio en la
+       * autenticación y recibe el modelo con las características del usuario.*/
+      auth.onAuthStateChanged(
+        /** Recibe las características del usuario o null si no ha iniciado
+         * sesión. */
+        usuarioAuth => {
+          if (usuarioAuth && usuarioAuth.email) {
+            // Usuario aceptado.
+            // @ts-ignore Muestra el email registrado en Google.
+            email.value = usuarioAuth.email;
+            // @ts-ignore Muestra el nombre registrado en Google.
+            nombre.value = usuarioAuth.displayName;
+            // @ts-ignore Muestra el avatar registrado en Google.
+            avatar.src = usuarioAuth.photoURL;
+          } else {
+            // No ha iniciado sesión. Pide datos para iniciar sesión.
+            auth.signInWithRedirect(provider);
+          }
+        }
+      );
 
 // Variable para referencia a la colección de modelos
  const modelsCollection = firebase.firestore().collection('models');
@@ -66,6 +76,13 @@ modelsCollection.add({
 }
 
 
+    
+
+// Función para mostrar el formulario de agregar modelo
+function showAddModelForm() {
+    document.getElementById('modelsList').style.display = 'none';
+    document.getElementById('addModelForm').style.display = 'block';
+}
     
 
 // Función para mostrar el formulario de agregar modelo
